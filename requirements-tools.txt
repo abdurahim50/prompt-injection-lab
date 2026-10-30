@@ -1,0 +1,11 @@
+# Tools use separate venvs (Python 3.12, CPU-only torch) to avoid dependency conflicts.
+#
+# garak:
+#   uv venv .venv-garak --python 3.12 && source .venv-garak/bin/activate
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   uv pip install garak
+#
+# llm-guard:
+#   uv venv .venv-guard --python 3.12 && source .venv-guard/bin/activate
+#   uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   uv pip install "llm-guard>=0.3"

@@ -1,0 +1,5 @@
+.env
+.venv/
+.venv-garak/
+.venv-guard/
+.venv-tools/

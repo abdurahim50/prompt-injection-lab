@@ -1,0 +1,66 @@
+# prompt-injection-lab
+#
+# Default:   docker compose up -d
+#            -> uses Ollama already running on the host (Windows Ollama via WSL mirrored networking)
+#
+# Portable:  set OLLAMA_BASE_URL=http://ollama:11434 in .env, then
+#            docker compose --profile ollama up -d
+#            docker compose exec ollama ollama pull llama3.2:3b
+#            -> runs Ollama in a container (CPU by default; used for CI and anyone cloning the repo)
+
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    network_mode: host
+    environment:
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
+      - HOST=127.0.0.1
+      - PORT=3000
+    volumes:
+      - open-webui-data:/app/backend/data
+    restart: unless-stopped
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma-data:/data
+    restart: unless-stopped
+
+  # Exfiltration catcher: every request an attack sends here shows up in
+  #   docker compose logs -f listener
+  listener:
+    image: python:3.12-slim
+    container_name: listener
+    command: ["python", "-u", "-m", "http.server", "9000"]
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+  # Optional containerized Ollama. Only starts with --profile ollama.
+  # Host port 11435 avoids clashing with the Windows Ollama on 11434.
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    profiles: ["ollama"]
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+    # GPU inside Docker: install the NVIDIA Container Toolkit in WSL first, then uncomment.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  open-webui-data:
+  chroma-data:
+  ollama-models:

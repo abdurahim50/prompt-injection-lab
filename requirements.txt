@@ -1,0 +1,11 @@
+# Lab apps (HelpBot, DocBot, MailAgent)
+fastapi
+uvicorn[standard]
+requests
+python-dotenv
+ollama
+chromadb
+langchain
+langchain-community
+langchain-ollama
+pypdf
