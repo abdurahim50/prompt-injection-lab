@@ -3,3 +3,8 @@
 .venv-garak/
 .venv-guard/
 .venv-tools/
+02-direct/helpbot_chatlog.jsonl
+
+__pycache__/
+*.pyc
+02-direct/helpbot_chatlog.jsonl
