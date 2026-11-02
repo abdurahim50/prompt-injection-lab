@@ -8,3 +8,4 @@
 __pycache__/
 *.pyc
 02-direct/helpbot_chatlog.jsonl
+03-indirect/chroma_store/
